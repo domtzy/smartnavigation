@@ -1,0 +1,624 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manila Go! | Smart Commute</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f8ed;
+    color: #24372d;
+}
+
+
+
+header {
+    background: #32612D;
+    color: white;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 5;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: #ffd84d;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #ffd84d;
+}
+
+
+.hero {
+    background: #d9f3a5;
+    padding: 15px 5%;
+}
+
+.hero h1 {
+    font-size: 34px;
+    margin-bottom: 10px;
+    color: #32612D;
+}
+
+.hero p {
+    color: #607D3B;
+    font-size: 15px;
+}
+
+
+.map-layout {
+    display: grid;
+    grid-template-columns: 370px 1fr;
+    min-height: 520px;
+    gap: 20px;
+    padding: 25px 5%;
+}
+
+.panel {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 5px 20px #164f3812;
+    height: fit-content;
+}
+
+.panel h2 {
+    font-size: 23px;
+    color: #164f38;
+    margin-bottom: 8px;
+}
+
+.panel .description {
+    font-size: 13px;
+    color: #849287;
+    margin-bottom: 23px;
+}
+
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e6eee2;
+    border-radius: 12px;
+    margin-bottom: 17px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #68a942;
+}
+
+
+.transport-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.transport {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.transport button {
+    background: #f2f7ed;
+    border: 2px solid transparent;
+    padding: 13px 5px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #526b4f;
+}
+
+.transport button span {
+    display: block;
+    font-size: 23px;
+    margin-bottom: 7px;
+}
+
+.transport button.active {
+    background: #d9f3a5;
+    border-color: #68a942;
+    color: #164f38;
+    font-weight: bold;
+}
+
+
+.find-btn {
+    width: 100%;
+    background: #ffbd38;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 900;
+    color: #49330c;
+    margin-top: 22px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.find-btn:hover {
+    background: #ffa900;
+    transform: translateY(-2px);
+}
+
+.clear-btn {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 1px solid #e6eee2;
+    border-radius: 12px;
+    margin-top: 9px;
+    cursor: pointer;
+}
+
+
+.result {
+    display: none;
+    margin-top: 17px;
+    padding: 15px;
+    border-radius: 12px;
+    background: #eaf7dc;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.result a {
+    color: #164f38;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+.map-box {
+    background: #e4eddf;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 520px;
+    position: relative;
+}
+
+.map-box iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+    border: none;
+}
+
+
+.section {
+    padding: 35px 5%;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    color:#164F38;
+    font-size: 25px;
+}
+
+.section-heading p {
+    font-size: 13px;
+    color: #849287;
+    margin-top: 5px;
+}
+
+
+.spot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.spot-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px #164f3810;
+    transition: .2s;
+}
+
+.spot-card:hover {
+    transform: translateY(-5px);
+}
+
+.spot-image {
+    height: 180px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.spot-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.spot-card:hover .spot-image img {
+    transform: scale(1.05);
+}
+
+.spot-info {
+    padding: 17px;
+}
+
+.spot-info h3 {
+    font-size: 16px;
+    margin-bottom: 7px;
+}
+
+.spot-info p {
+    color: #849287;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.spot-info a {
+    display: block;
+    text-align: center;
+    background: #164f38;
+    color: white;
+    text-decoration: none;
+    padding: 11px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.spot-info a:hover {
+    background: #68a942;
+}
+
+
+footer {
+    background: #164f38;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    font-size: 12px;
+}
+
+
+@media(max-width: 900px) {
+    .map-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .spot-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .map-box {
+        min-height: 400px;
+    }
+}
+
+@media(max-width: 550px) {
+    header {
+        padding: 16px;
+    }
+
+    nav {
+        gap: 10px;
+    }
+
+    nav a {
+        font-size: 11px;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+
+    .spot-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+
+<header>
+    <div class="logo">MANILA<span>GO!</span></div>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#planner">Navigate</a>
+        <a href="#explore">Explore</a>
+    </nav>
+</header>
+
+
+<section class="hero" id="home">
+    <h1>Ready, Set, Explore!</h1>
+    <p>Your fun and easy way to discover Manila. Plan your trip and explore the city!</p>
+</section>
+
+
+<section class="map-layout" id="planner">
+
+    <div class="panel">
+
+        <h2>Where to next?</h2>
+
+        <p class="description">
+            Enter your starting point and destination.
+        </p>
+
+        <label> STARTING POINT</label>
+        <input type="text" id="pointA"
+            placeholder="Where are you starting?">
+
+        <label> DESTINATION</label>
+        <input type="text" id="pointB"
+            placeholder="Where are you going?">
+
+        <p class="transport-title">
+             Choose your ride
+        </p>
+
+        <div class="transport">
+
+            <button class="active"
+                onclick="selectMode(this,'transit')">
+                <span>🚆</span>
+                Transit
+            </button>
+
+            <button
+                onclick="selectMode(this,'walking')">
+                <span>🚶🏽‍♂️</span>
+                Walking
+            </button>
+
+            <button
+                onclick="selectMode(this,'driving')">
+                <span>🚗</span>
+                Driving
+            </button>
+
+        </div>
+
+        <button class="find-btn" onclick="findRoute()">
+            LET'S GO! →
+        </button>
+
+        <button class="clear-btn" onclick="clearSearch()">
+            Clear Search
+        </button>
+
+        <div class="result" id="result">
+            <strong> Your route is ready!</strong>
+            <p>Open Google Maps to see your directions.</p>
+            <a id="routeLink" href="#" target="_blank" rel="noopener">
+                View Route in Google Maps →
+            </a>
+        </div>
+
+    </div>
+
+  
+    <div class="map-box">
+        <iframe
+            id="map"
+            src="https://maps.google.com/maps?q=Manila%20Philippines&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            loading="lazy"
+            title="Manila Google Map">
+        </iframe>
+    </div>
+
+</section>
+
+
+<section class="section" id="explore">
+
+    <div class="section-heading">
+        <div>
+            <h2>Explore Manila!</h2>
+            <p>Here are some awesome places you should visit.</p>
+        </div>
+    </div>
+
+    <div class="spot-grid">
+         
+
+<div class="spot-card">
+    <div class="spot-image">
+        <img
+            src="fort.jpg"
+            alt="Fort Santiago">
+    </div>
+
+    <div class="spot-info">
+        <h3>Fort Santiago</h3>
+        <p>Discover the historic fortress of Intramuros.</p>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=Fort+Santiago+Manila"
+           target="_blank" rel="noopener">
+            Explore Map →
+        </a>
+    </div>
+</div>
+
+
+<div class="spot-card">
+    <div class="spot-image">
+        <img
+            src="rizal.jpg"
+            alt="Rizal Park">
+    </div>
+
+    <div class="spot-info">
+        <h3>Rizal Park</h3>
+        <p>Enjoy a relaxing visit to Manila's famous park.</p>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=Rizal+Park+Manila"
+           target="_blank" rel="noopener">
+            Explore Map →
+        </a>
+    </div>
+</div>
+
+
+<div class="spot-card">
+    <div class="spot-image">
+        <img
+            src="sanagustin.jpg"
+            alt="San Agustin Church">
+    </div>
+
+    <div class="spot-info">
+        <h3>San Agustin Church</h3>
+        <p>Visit a beautiful historic church in Intramuros.</p>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=San+Agustin+Church+Manila"
+           target="_blank" rel="noopener">
+            Explore Map →
+        </a>
+    </div>
+</div>
+
+
+<div class="spot-card">
+    <div class="spot-image">
+        <img
+            src="nationalmuseum.jpg"
+            alt="National Museum">
+    </div>
+
+    <div class="spot-info">
+        <h3>National Museum</h3>
+        <p>Discover Philippine art and cultural treasures.</p>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=National+Museum+of+Fine+Arts+Manila"
+           target="_blank" rel="noopener">
+            Explore Map →
+        </a>
+    </div>
+</div>
+
+    </div>
+
+</section>
+
+
+<footer>
+    <p> MANILA GO! | Smart Public Transit & Commute Navigator</p>
+    <p style="margin-top:8px;">
+        Explore more. Travel smarter. Discover Manila.
+    </p>
+</footer>
+
+
+<script>
+
+let selectedMode = "transit";
+
+
+function selectMode(button, mode) {
+
+    document.querySelectorAll(".transport button")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    selectedMode = mode;
+}
+
+
+function findRoute() {
+
+    let pointA = document.getElementById("pointA")
+        .value.trim();
+
+    let pointB = document.getElementById("pointB")
+        .value.trim();
+
+    if (pointA === "" || pointB === "") {
+        alert("Please enter both your starting point and destination!");
+        return;
+    }
+
+    let url =
+        "https://www.google.com/maps/dir/?api=1" +
+        "&origin=" +
+        encodeURIComponent(pointA + ", Manila, Philippines") +
+        "&destination=" +
+        encodeURIComponent(pointB + ", Manila, Philippines") +
+        "&travelmode=" + selectedMode;
+
+    document.getElementById("routeLink").href = url;
+
+    document.getElementById("result").style.display = "block";
+
+    window.open(url, "_blank");
+}
+
+function clearSearch() {
+
+    document.getElementById("pointA").value = "";
+    document.getElementById("pointB").value = "";
+
+    document.getElementById("result").style.display = "none";
+
+    document.getElementById("routeLink").href = "#";
+}
+
+</script>
+
+</body>
+</html>
+
